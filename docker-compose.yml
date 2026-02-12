@@ -1,0 +1,17 @@
+services:
+  vfs-beta:
+    build: .
+    container_name: vfs-beta
+    image: vfs-beta-app:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

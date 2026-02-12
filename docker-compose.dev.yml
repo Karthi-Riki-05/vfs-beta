@@ -1,0 +1,22 @@
+services:
+  vfs-beta-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: vfs-beta-dev
+    image: vfs-beta-app:dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app:rw # Syncs your source code
+      - /app/node_modules # Anonymous: Protects container packages
+      - /app/.next # Anonymous: Protects build cache
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=100
+      - NEXT_TELEMETRY_DISABLED=1
+    stdin_open: true
+    tty: true
+    restart: always

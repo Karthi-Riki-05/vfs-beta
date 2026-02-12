@@ -1,0 +1,26 @@
+/* Minimal styles moved from classic index.html for charts editor */
+.geEditor {
+    background: var(--background, #ffffff);
+    color: var(--foreground, #171717);
+}
+
+.geBlock {
+    z-index: 1;
+    margin: 1rem;
+    padding: 1.25rem;
+    text-align: center;
+    min-width: 50%;
+}
+
+/* Simple dark mode fallback */
+@media (prefers-color-scheme: dark) {
+    .geEditor {
+        background: #0a0a0a;
+        color: #ededed;
+    }
+
+    .geBlock {
+        background: #111;
+        color: #eee;
+    }
+}

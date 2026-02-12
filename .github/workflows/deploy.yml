@@ -1,0 +1,49 @@
+name: Deploy VFS-Beta to Lightsail
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install Lightsail Control Plugin
+        run: |
+          curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "lightsailctl"
+          chmod +x lightsailctl
+          sudo mv lightsailctl /usr/local/bin/
+
+      - name: Build VFS-Beta Image
+        run: docker build -f Dockerfile.prod -t vfs-beta:latest .
+
+      - name: Push to Lightsail
+        run: |
+          aws lightsail push-container-image \
+            --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} \
+            --label vfs-beta-deploy \
+            --image vfs-beta:latest
+
+      - name: Deploy to Lightsail
+        run: |
+          IMAGE_NAME=$(aws lightsail get-container-images --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} | jq -r '.containerImages | .[] | select(.image | contains("vfs-beta-deploy")) | .image' | head -n 1)
+          
+          aws lightsail create-container-service-deployment \
+            --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} \
+            --containers "{
+              \"vfs-beta\": {
+                \"image\": \"$IMAGE_NAME\",
+                \"ports\": {\"3000\": \"HTTP\"}
+              }
+            }" \
+            --public-endpoint "{\"containerName\": \"vfs-beta\", \"containerPort\": 3000}"
