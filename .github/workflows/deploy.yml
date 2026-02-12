@@ -28,22 +28,36 @@ jobs:
         run: docker build -f Dockerfile.prod -t vfs-beta:latest .
 
       - name: Push to Lightsail
+        id: push_step
         run: |
-          aws lightsail push-container-image \
+          # Push the image and capture the output
+          PUSH_OUTPUT=$(aws lightsail push-container-image \
             --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} \
             --label vfs-beta-deploy \
-            --image vfs-beta:latest
+            --image vfs-beta:latest)
+          
+          # Use grep to extract the unique image name assigned by AWS
+          # It looks like: ":tawdraw.vfs-beta-deploy.1"
+          IMAGE_NAME=$(echo $PUSH_OUTPUT | grep -o ":${{ secrets.LIGHTSAIL_SERVICE_NAME }}.vfs-beta-deploy.[0-9]\+")
+          
+          echo "Captured Image Name: $IMAGE_NAME"
+          
+          # Store it in the GitHub Environment for the next step
+          echo "FINAL_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
       - name: Deploy to Lightsail
         run: |
-          IMAGE_NAME=$(aws lightsail get-container-images --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} | jq -r '.containerImages | .[] | select(.image | contains("vfs-beta-deploy")) | .image' | head -n 1)
-          
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.LIGHTSAIL_SERVICE_NAME }} \
             --containers "{
               \"vfs-beta\": {
-                \"image\": \"$IMAGE_NAME\",
+                \"image\": \"${{ env.FINAL_IMAGE_NAME }}\",
                 \"ports\": {\"3000\": \"HTTP\"}
               }
             }" \
             --public-endpoint "{\"containerName\": \"vfs-beta\", \"containerPort\": 3000}"
+
+      - name: Deployment Status
+        run: |
+          echo "Successfully triggered deployment for ${{ env.FINAL_IMAGE_NAME }}"
+          echo "Visit your Lightsail dashboard to see the rolling update: https://lightsail.aws.amazon.com/ls/webapp/${{ secrets.AWS_REGION }}/container-services/${{ secrets.LIGHTSAIL_SERVICE_NAME }}/deployments"
