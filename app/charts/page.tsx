@@ -1,20 +1,15 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function DrawioEditorPage() {
+function DrawioEditor() {
     const searchParams = useSearchParams();
     const [iframeSrc, setIframeSrc] = useState("");
 
     useEffect(() => {
         // 1. தற்போதைய URL-இல் உள்ள அனைத்து பாராமீட்டர்களையும் எடுக்கிறோம்
         const params = new URLSearchParams(searchParams.toString());
-
-        // 2. Sketch UI வேண்டுமென்றால் 'ui=sketch' என்பதைச் சேர்க்க வேண்டும்
-        // if (!params.has("ui")) {
-        //     params.set("ui", "sketch");
-        // }
 
         // 3. இதர முக்கிய தேவைகள் (உதாரணமாக: எடிட்டர் முழுமையாகத் தெரிய)
         params.set("proto", "json");
@@ -43,5 +38,13 @@ export default function DrawioEditorPage() {
                 </div>
             )}
         </main>
+    );
+}
+
+export default function DrawioEditorPage() {
+    return (
+        <Suspense fallback={<div>Loading Editor...</div>}>
+            <DrawioEditor />
+        </Suspense>
     );
 }

@@ -2,10 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  // Static indicator (அந்த 'N' ஐகான்) ஐ மறைக்க இங்கே மாற்றவும்
-  devIndicators: {
-    buildActivity: false, // இது build நடக்கும்போது வரும் indicator-ஐ முடக்கும்
-  },
 
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {

@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         // Call OpenAI API
         const completion = await openai.chat.completions.create({
             model,
-            messages: body.messages,
+            messages: body.messages as any,
         });
 
         // Return success response
