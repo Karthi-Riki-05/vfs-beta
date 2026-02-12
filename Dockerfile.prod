@@ -10,7 +10,11 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Set dummy env variables to bypass build-time checks
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV OPENAI_API_KEY="placeholder_for_build"
+
 RUN npm run build
 
 # Stage 3: Production runner
@@ -23,6 +27,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy build output
+# Standalone mode reduces image size significantly
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
