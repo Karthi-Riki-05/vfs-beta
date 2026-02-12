@@ -11,6 +11,7 @@ function DrawioEditor() {
         // 1. தற்போதைய URL-இல் உள்ள அனைத்து பாராமீட்டர்களையும் எடுக்கிறோம்
         const params = new URLSearchParams(searchParams.toString());
 
+    
         // 3. இதர முக்கிய தேவைகள் (உதாரணமாக: எடிட்டர் முழுமையாகத் தெரிய)
         params.set("proto", "json");
 

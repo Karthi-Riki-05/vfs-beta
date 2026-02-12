@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
         console.log(process.env.OPENAI_API_KEY, 'API KEY');
         // Parse and validate request body
         const body: RequestBody = await request.json();
-        console.log(body);
 
         if (!body.messages || !Array.isArray(body.messages) || body.messages.length === 0) {
             return NextResponse.json(
