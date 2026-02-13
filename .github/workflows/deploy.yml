@@ -51,7 +51,11 @@ jobs:
             --containers "{
               \"vfs-beta\": {
                 \"image\": \"${{ env.FINAL_IMAGE_NAME }}\",
-                \"ports\": {\"3000\": \"HTTP\"}
+                \"ports\": {\"3000\": \"HTTP\"},
+                \"environment\": {
+                  \"OPENAI_API_KEY\": \"${{ secrets.OPENAI_API_KEY }}\",
+                  \"NEXT_PUBLIC_API_URL\": \"https://your-url.com\"
+                }
               }
             }" \
             --public-endpoint "{\"containerName\": \"vfs-beta\", \"containerPort\": 3000}"
