@@ -12,6 +12,7 @@ window.DRAWIO_LIGHTBOX_URL = null; // Replace with your lightbox URL, eg. https:
 window.DRAW_MATH_URL = 'math4/es5';
 window.DRAWIO_CONFIG =
 {
+    "ui": "sketch",
     "allowAi": true,
     "enableAi": true,
     "defaultFonts": ["Inter", "Roboto"],
@@ -32,7 +33,7 @@ window.DRAWIO_CONFIG =
         // "geminiApiKey": "your-gemini-key",
         // "claudeApiKey": "your-claude-key",
         "myCustomApiKey": "your-internal-api-key",
-        "create": "You are a diagram expert. Generate ONLY the <mxGraphModel> content for draw.io. DO NOT include <mxfile>, <diagram>, or any other wrappers. Start directly with <mxGraphModel> and end with </mxGraphModel>.",        "update": "You are a helpful assistant that helps with the following draw.io diagram and returns an updated draw.io diagram XML if needed.",
+        "create": "You are a diagram expert. Generate ONLY the <mxGraphModel> content for draw.io. DO NOT include <mxfile>, <diagram>, or any other wrappers. Start directly with <mxGraphModel> and end with </mxGraphModel>.", "update": "You are a helpful assistant that helps with the following draw.io diagram and returns an updated draw.io diagram XML if needed.",
         "assist": "You are a helpful assistant that creates XML for draw.io diagrams or helps with the draw.io diagram editor."
     },
 
@@ -96,4 +97,6 @@ window.DRAWIO_CONFIG =
     }
 }; // Replace with your custom draw.io configurations. For more details, https://www.drawio.com/doc/faq/configure-diagram-editor
 urlParams['sync'] = 'manual';
+urlParams['sketch'] = '1';
+
 console.log(window.DRAWIO_CONFIG);

@@ -1,5 +1,6 @@
 "use client";
 
+import { ClientPageRoot } from "next/dist/client/components/client-page";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 
@@ -11,18 +12,20 @@ function DrawioEditor() {
         // 1. தற்போதைய URL-இல் உள்ள அனைத்து பாராமீட்டர்களையும் எடுக்கிறோம்
         const params = new URLSearchParams(searchParams.toString());
 
-    
+
         // 3. இதர முக்கிய தேவைகள் (உதாரணமாக: எடிட்டர் முழுமையாகத் தெரிய)
         params.set("proto", "json");
+        params.set("ui", "sketch");
 
         // 4. இறுதி Iframe URL-ஐ உருவாக்குகிறோம்
         // இது /public/draw/index.html-ஐக் குறிக்கும்
+
         const finalUrl = `draw_io/index.html?${params.toString()}`;
         setIframeSrc(finalUrl);
     }, [searchParams]);
 
     return (
-        <main style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+        <main style={{ width: "100vw", height: "100dvh", overflow: "hidden" }}>
             {iframeSrc ? (
                 <iframe
                     src={iframeSrc}
